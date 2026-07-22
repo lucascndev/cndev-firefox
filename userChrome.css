@@ -1,0 +1,429 @@
+/* ============================================================
+   TUI × Liquid Glass — Firefox userChrome.css (macOS)
+   textfox-style labeled section boxes (navbar / tabs / main)
+   on real macOS behind-window vibrancy.
+   Requires (set in user.js):
+     toolkit.legacyUserProfileCustomizations.stylesheets = true
+     widget.macos.titlebar-blend-mode.behind-window = true
+   Works best with the built-in System/Dark theme — theme add-ons
+   like Gruvbox paint opaque backgrounds that fight the glass.
+   ============================================================ */
+
+:root {
+  /* -- type ---------------------------------------------------- */
+  --tui-font: "SF Mono", "Menlo", Consolas, monospace;
+  --tui-font-size: 12px;
+
+  /* -- glass --------------------------------------------------- */
+  --glass-tint:      rgba(18, 20, 26, 0.30);  /* faint ink over vibrancy */
+  --glass-raised:    rgba(255, 255, 255, 0.08);
+  --glass-active:    rgba(255, 255, 255, 0.14);
+  --glass-hover:     rgba(255, 255, 255, 0.09);
+  --glass-inset:     rgba(0, 0, 0, 0.28);
+  --glass-blur:      blur(18px) saturate(160%);
+  --panel-glass:     rgba(18, 20, 26, 0.55);  /* floating sheets */
+
+  /* -- rules / borders (textfox-style boxes) ------------------- */
+  --box-border-width: 1px;
+  --rule:            rgba(255, 255, 255, 0.22);
+  --rule-strong:     rgba(255, 255, 255, 0.32);
+  --box-transition:  border-color 0.2s ease, color 0.2s ease;
+
+  /* -- ink ----------------------------------------------------- */
+  --ink:             rgba(235, 240, 245, 0.92);
+  --ink-dim:         rgba(235, 240, 245, 0.55);
+  --accent:          rgb(125, 200, 255);
+  --accent-soft:     rgba(125, 200, 255, 0.35);
+
+  --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.16),
+           inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+
+  /* square everything */
+  --tab-border-radius: 0 !important;
+  --toolbarbutton-border-radius: 0 !important;
+  --urlbar-icon-border-radius: 0 !important;
+  --arrowpanel-border-radius: 0 !important;
+  --panel-border-radius: 0 !important;
+  --border-radius-medium: 0 !important;
+  --border-radius-small: 0 !important;
+  --button-border-radius: 0 !important;
+
+  --urlbar-toolbar-height: 28px !important;
+  --urlbar-container-height: 28px !important;
+}
+
+/* ============================================================
+   Real macOS behind-window vibrancy
+   ============================================================ */
+/* macOS only — on other platforms (this file copied to another
+   machine) the chrome keeps its normal opaque backgrounds. */
+@media (-moz-platform: macos) {
+  :root:not([windowtype="Toolkit:PictureInPicture"], [inDOMFullscreen]) {
+    appearance: -moz-sidebar !important;
+  }
+
+  /* Clear every opaque layer so the vibrancy shows through —
+     this also overrides theme add-ons (e.g. Gruvbox) that paint
+     solid LWT backgrounds over the window. */
+  :root,
+  body,
+  #main-window,
+  #navigator-toolbox,
+  #browser,
+  #tabbrowser-tabbox,
+  #tabbrowser-tabpanels,
+  .browserContainer,
+  #browser-panel {
+    background: transparent !important;
+    background-image: none !important;
+  }
+
+  .browser-toolbar:not(.titlebar-color) {
+    background-color: transparent !important;
+  }
+
+  /* faint uniform ink tint over the vibrancy */
+  :root:not([windowtype="Toolkit:PictureInPicture"], [inDOMFullscreen])::before {
+    content: "" !important;
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    background: var(--glass-tint) !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+  }
+}
+
+/* ============================================================
+   Type — monospace chrome
+   ============================================================ */
+#navigator-toolbox,
+#urlbar, #searchbar,
+.tabbrowser-tab,
+#TabsToolbar,
+#PersonalToolbar,
+findbar,
+panel, menupopup {
+  font-family: var(--tui-font) !important;
+  font-size: var(--tui-font-size) !important;
+  color: var(--ink) !important;
+}
+
+#navigator-toolbox {
+  border: none !important;
+}
+#navigator-toolbox toolbar {
+  background: transparent !important;
+}
+
+/* ============================================================
+   textfox-style labeled boxes
+   ============================================================ */
+
+/* --- tabs box ------------------------------------------------ */
+#TabsToolbar {
+  margin: 3px 3px 0 !important;
+  padding: 1px 2px !important;
+  border: var(--box-border-width) solid var(--rule) !important;
+  transition: var(--box-transition) !important;
+}
+#TabsToolbar:hover {
+  border-color: var(--accent) !important;
+}
+
+/* --- navbar box ---------------------------------------------- */
+#nav-bar {
+  margin: 3px 3px 0 !important;
+  padding: 2px !important;
+  border: var(--box-border-width) solid var(--rule) !important;
+  box-shadow: none !important;
+  transition: var(--box-transition) !important;
+}
+#nav-bar:hover,
+#nav-bar:focus-within {
+  border-color: var(--accent) !important;
+}
+#nav-bar:not([urlbar-exceeds-toolbar-bounds]) {
+  overflow: unset !important;
+}
+
+/* --- bookmarks box (items centered) --------------------------- */
+#PersonalToolbar {
+  margin: 3px 3px 0 !important;
+  padding: 2px !important;
+  border: var(--box-border-width) solid var(--rule) !important;
+  transition: var(--box-transition) !important;
+}
+#PersonalToolbar:hover {
+  border-color: var(--accent) !important;
+}
+
+#PlacesToolbarItems {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.bookmark-item {
+  border-radius: 0 !important;
+  color: var(--ink-dim) !important;
+}
+.bookmark-item:hover {
+  background: var(--glass-hover) !important;
+  color: var(--ink) !important;
+  box-shadow: inset 0 0 0 1px var(--rule) !important;
+}
+
+/* --- main content box ----------------------------------------- */
+#tabbrowser-tabbox {
+  margin: 3px !important;
+  padding: 2px !important;
+  border: var(--box-border-width) solid var(--rule) !important;
+  transition: var(--box-transition) !important;
+}
+#tabbrowser-tabbox:hover {
+  border-color: var(--accent) !important;
+}
+
+:root[inFullscreen="true"] #tabbrowser-tabbox {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* ============================================================
+   Tabs — square glass panes, active tab bracketed
+   ============================================================ */
+.tabbrowser-tab {
+  min-height: 26px !important;
+}
+
+.tab-background {
+  border-radius: 0 !important;
+  margin-block: 2px !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.tabbrowser-tab:hover:not([selected]) .tab-background {
+  background: var(--glass-hover) !important;
+  border-color: var(--rule) !important;
+}
+
+.tab-background[selected],
+.tab-background[multiselected] {
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.10) 0%,
+      rgba(255, 255, 255, 0.03) 100%
+    ),
+    var(--glass-active) !important;
+  border: 1px solid var(--rule-strong) !important;
+  box-shadow: var(--sheen) !important;
+}
+
+.tab-label {
+  color: var(--ink-dim) !important;
+}
+.tabbrowser-tab:hover .tab-label {
+  color: var(--ink) !important;
+}
+.tabbrowser-tab[selected] .tab-label {
+  color: var(--accent) !important;
+}
+.tabbrowser-tab[selected] .tab-label::before { content: "["; margin-right: 4px; color: var(--ink-dim); }
+.tabbrowser-tab[selected] .tab-label::after  { content: "]"; margin-left: 4px;  color: var(--ink-dim); }
+
+.tab-close-button {
+  border-radius: 0 !important;
+  color: var(--ink-dim) !important;
+}
+.tab-close-button:hover {
+  background: rgba(255, 90, 90, 0.28) !important;
+  color: var(--ink) !important;
+}
+
+#tabs-newtab-button,
+#new-tab-button {
+  border-radius: 0 !important;
+}
+
+/* ============================================================
+   URL bar — a prompt in a glass groove
+   ============================================================ */
+#urlbar,
+#searchbar {
+  color: var(--ink) !important;
+}
+
+#urlbar-background,
+#searchbar {
+  border-radius: 0 !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  border: 1px solid var(--rule) !important;
+  box-shadow: inset 0 1px 3px var(--glass-inset) !important;
+}
+
+#urlbar[focused="true"] > #urlbar-background {
+  border-color: var(--accent-soft) !important;
+  box-shadow: inset 0 1px 3px var(--glass-inset),
+              0 0 0 1px var(--accent-soft) !important;
+}
+
+#urlbar-input-container::before {
+  content: "❯";
+  color: var(--accent);
+  font-family: var(--tui-font);
+  align-self: center;
+  margin-inline: 8px 2px;
+  opacity: 0.9;
+}
+
+#urlbar-input {
+  font-family: var(--tui-font) !important;
+  font-size: var(--tui-font-size) !important;
+}
+
+/* urlbar dropdown: floating glass sheet */
+#urlbar[open] > .urlbarView > .urlbarView-body-outer,
+.urlbarView {
+  border-radius: 0 !important;
+}
+#urlbar[open] > #urlbar-background {
+  background: var(--panel-glass) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--rule-strong) !important;
+  box-shadow: var(--sheen), 0 18px 40px rgba(0, 0, 0, 0.45) !important;
+}
+.urlbarView-row[selected] > .urlbarView-row-inner,
+.urlbarView-row-inner[selected] {
+  background: var(--glass-active) !important;
+  border-radius: 0 !important;
+  box-shadow: inset 2px 0 0 var(--accent) !important;
+}
+
+/* ============================================================
+   Toolbar buttons — square glass keys
+   ============================================================ */
+toolbarbutton {
+  border-radius: 0 !important;
+}
+.toolbarbutton-1 .toolbarbutton-icon,
+.toolbarbutton-1 .toolbarbutton-badge-stack {
+  border-radius: 0 !important;
+}
+.toolbarbutton-1:hover .toolbarbutton-icon,
+.toolbarbutton-1:hover .toolbarbutton-badge-stack {
+  background: var(--glass-hover) !important;
+  box-shadow: inset 0 0 0 1px var(--rule) !important;
+}
+.toolbarbutton-1[open] .toolbarbutton-icon,
+.toolbarbutton-1:active .toolbarbutton-icon {
+  background: var(--glass-active) !important;
+  box-shadow: inset 0 0 0 1px var(--rule-strong) !important;
+}
+
+/* ============================================================
+   Panels & menus — square glass sheets
+   ============================================================ */
+panel, menupopup {
+  --panel-background: var(--panel-glass) !important;
+  --panel-border-color: var(--rule-strong) !important;
+  --panel-color: var(--ink) !important;
+  --arrowpanel-background: var(--panel-glass) !important;
+  --arrowpanel-border-color: var(--rule-strong) !important;
+  --arrowpanel-color: var(--ink) !important;
+}
+panelview, .panel-arrowcontent, menupopup {
+  border-radius: 0 !important;
+  backdrop-filter: var(--glass-blur) !important;
+}
+menuitem, menu, .subviewbutton {
+  border-radius: 0 !important;
+}
+menuitem:hover, menu:hover,
+.subviewbutton:not([disabled]):hover {
+  background: var(--glass-active) !important;
+  box-shadow: inset 2px 0 0 var(--accent) !important;
+}
+
+/* ============================================================
+   Findbar + sidebar
+   ============================================================ */
+findbar {
+  background: var(--panel-glass) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border-top: 1px solid var(--rule) !important;
+}
+findbar .findbar-textbox {
+  border-radius: 0 !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid var(--rule) !important;
+  color: var(--ink) !important;
+  font-family: var(--tui-font) !important;
+}
+
+#sidebar-box, #sidebar-header {
+  background: var(--glass-tint) !important;
+  color: var(--ink) !important;
+  font-family: var(--tui-font) !important;
+}
+#sidebar-header {
+  border-bottom: 1px solid var(--rule) !important;
+}
+
+/* ============================================================
+   Braille spinner — terminal-style tab loading indicator
+   ============================================================ */
+@keyframes gf-spinner {
+  0%     { content: "⠋"; }
+  12.5%  { content: "⠙"; }
+  25%    { content: "⠹"; }
+  37.5%  { content: "⠸"; }
+  50%    { content: "⠼"; }
+  62.5%  { content: "⠴"; }
+  75%    { content: "⠦"; }
+  87.5%  { content: "⠧"; }
+  100%   { content: "⠋"; }
+}
+
+.tab-throbber {
+  background-image: none !important;
+}
+.tab-throbber::before {
+  content: "⠋" !important;
+  background-image: none !important;
+  animation: gf-spinner 0.7s steps(1) infinite !important;
+  color: var(--accent) !important;
+  font-family: var(--tui-font) !important;
+  font-size: var(--tui-font-size) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+/* connecting (not yet receiving data): dimmed spinner */
+.tab-throbber[busy]:not([progress])::before {
+  color: var(--ink-dim) !important;
+}
+
+/* ============================================================
+   Statusline — link-hover URL preview as a tmux-style bar
+   ============================================================ */
+#statuspanel {
+  margin: 0 !important;
+}
+#statuspanel-label {
+  background: var(--panel-glass) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--rule) !important;
+  border-radius: 0 !important;
+  color: var(--ink) !important;
+  font-family: var(--tui-font) !important;
+  font-size: var(--tui-font-size) !important;
+  padding: 3px 8px !important;
+  margin: 0 !important;
+  box-shadow: inset 2px 0 0 var(--accent),
+              0 6px 18px rgba(0, 0, 0, 0.35) !important;
+}
