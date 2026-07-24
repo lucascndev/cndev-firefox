@@ -55,14 +55,24 @@
 /* ============================================================
    Real macOS behind-window vibrancy
    ============================================================ */
-/* macOS only — on other platforms (this file copied to another
-   machine) the chrome keeps its normal opaque backgrounds. */
+/* macOS only — -moz-sidebar is the AppKit behind-window vibrancy
+   surface and has no equivalent on other platforms. */
 @media (-moz-platform: macos) {
   :root:not([windowtype="Toolkit:PictureInPicture"], [inDOMFullscreen]) {
     appearance: -moz-sidebar !important;
   }
+}
 
-  /* Clear every opaque layer so the vibrancy shows through —
+/* macOS + Windows. On Windows the backdrop comes from Mica/Acrylic
+   instead, which requires in about:config:
+     widget.windows.mica              = true
+     widget.windows.mica.toplevel-backdrop = 1 (Mica) or 2 (Acrylic)
+     browser.tabs.allow_transparent_browser = true  (create it)
+   and, in Windows Settings → Personalization → Colors, "Show accent
+   color on title bars and window borders" turned OFF.
+   Other platforms keep their normal opaque backgrounds. */
+@media (-moz-platform: macos), (-moz-platform: windows) {
+  /* Clear every opaque layer so the backdrop shows through —
      this also overrides theme add-ons (e.g. Gruvbox) that paint
      solid LWT backgrounds over the window. */
   :root,
@@ -73,7 +83,9 @@
   #tabbrowser-tabbox,
   #tabbrowser-tabpanels,
   .browserContainer,
-  #browser-panel {
+  #browser-panel,
+  .browserStack,
+  browser[type="content"] {
     background: transparent !important;
     background-image: none !important;
   }
