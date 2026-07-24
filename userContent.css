@@ -34,10 +34,12 @@
     --newtab-button-static-background: transparent !important;
   }
 
-  /* macOS only: go fully transparent so the behind-window
-     vibrancy from userChrome.css shows through the page.
+  /* macOS + Windows: go fully transparent so the behind-window
+     vibrancy (macOS) or Mica/Acrylic backdrop (Windows) shows
+     through the page. Windows additionally requires
+     browser.tabs.allow_transparent_browser = true.
      Other platforms keep the solid dark background above. */
-  @media (-moz-platform: macos) {
+  @media (-moz-platform: macos), (-moz-platform: windows) {
     body {
       background: transparent !important;
     }
