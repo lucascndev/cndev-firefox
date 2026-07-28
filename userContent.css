@@ -4,6 +4,35 @@
    Firefox logo, textfox-style.
    ============================================================ */
 
+/* ------------------------------------------------------------
+   Restore an opaque canvas on real web pages.
+
+   userChrome.css makes browser[type="content"] transparent so the
+   new tab page can show the vibrancy backdrop. The side effect is
+   that any site which never paints its own html/body background
+   inherits that transparency and becomes unreadable.
+
+   Deliberately NOT !important: a user-origin normal declaration
+   loses to any author declaration, so sites that do set their own
+   background keep it. This only fills in where the page relied on
+   the browser default. Canvas/CanvasText follow the page's
+   color-scheme, so dark-mode sites stay dark.
+   ------------------------------------------------------------ */
+@-moz-document url-prefix("http://"), url-prefix("https://") {
+  :root {
+    background-color: Canvas;
+    color: CanvasText;
+  }
+}
+
+/* Stubborn sites that explicitly declare a transparent background
+   need the heavier hammer. Add domains here as you hit them. */
+@-moz-document domain("invesco.com") {
+  html {
+    background-color: #ffffff !important;
+  }
+}
+
 @-moz-document url("about:home"), url("about:newtab") {
   :root {
     --gf-font: "SF Mono", "Menlo", Consolas, monospace;
