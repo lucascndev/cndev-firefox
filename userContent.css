@@ -35,7 +35,8 @@
 
 @-moz-document url("about:home"), url("about:newtab") {
   :root {
-    --gf-font: "SF Mono", "Menlo", Consolas, monospace;
+    --gf-font: "SF Mono", "Menlo", "Cascadia Mono", Consolas,
+              "Segoe UI Symbol", monospace;
     --gf-font-size: 12px;
     --gf-ink: rgba(235, 240, 245, 0.92);
     --gf-ink-dim: rgba(235, 240, 245, 0.55);

@@ -11,7 +11,10 @@
 
 :root {
   /* -- type ---------------------------------------------------- */
-  --tui-font: "SF Mono", "Menlo", Consolas, monospace;
+  /* Cascadia Mono / Segoe UI Symbol carry the glyphs Consolas lacks
+     (U+276F prompt, U+2800 braille spinner) so Windows shows no tofu. */
+  --tui-font: "SF Mono", "Menlo", "Cascadia Mono", Consolas,
+               "Segoe UI Symbol", monospace;
   --tui-font-size: 12px;
 
   /* -- glass --------------------------------------------------- */
