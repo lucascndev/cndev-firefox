@@ -390,33 +390,36 @@ findbar .findbar-textbox {
 /* ============================================================
    Braille spinner — terminal-style tab loading indicator
    ============================================================ */
+/* `content` is not an animatable property, so keyframing it does nothing --
+   the glyph just freezes on frame one. Instead the eight frames live in a
+   single string and the strip is stepped sideways by transform, which does
+   animate. The throbber clips to one character wide; steps(8) over -100%
+   of an 8-glyph strip lands exactly one glyph per step. */
 @keyframes gf-spinner {
-  0%     { content: "⠋"; }
-  12.5%  { content: "⠙"; }
-  25%    { content: "⠹"; }
-  37.5%  { content: "⠸"; }
-  50%    { content: "⠼"; }
-  62.5%  { content: "⠴"; }
-  75%    { content: "⠦"; }
-  87.5%  { content: "⠧"; }
-  100%   { content: "⠋"; }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
 }
 
 .tab-throbber {
   background-image: none !important;
-}
-.tab-throbber::before {
-  content: "⠋" !important;
-  background-image: none !important;
-  animation: gf-spinner 0.7s steps(1) infinite !important;
-  color: var(--accent) !important;
-  font-family: var(--tui-font) !important;
-  font-size: var(--tui-font-size) !important;
+  overflow: hidden !important;
+  width: 1ch !important;
+  min-width: 1ch !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: 100% !important;
+  font-family: var(--tui-font) !important;
+  font-size: var(--tui-font-size) !important;
+  color: var(--accent) !important;
+}
+.tab-throbber::before {
+  content: "⠋⠙⠹⠸⠼⠴⠦⠧" !important;
+  background-image: none !important;
+  animation: gf-spinner 0.72s steps(8) infinite !important;
+  display: block !important;
+  flex: 0 0 auto !important;
+  width: max-content !important;
+  white-space: pre !important;
+  line-height: 1 !important;
 }
 /* connecting (not yet receiving data): dimmed spinner */
 .tab-throbber[busy]:not([progress])::before {
