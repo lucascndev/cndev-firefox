@@ -19,7 +19,12 @@
    color-scheme, so dark-mode sites stay dark.
    ------------------------------------------------------------ */
 @-moz-document url-prefix("http://"), url-prefix("https://") {
-  :root {
+  /* :not(svg) is load-bearing. url-prefix() also matches SVGs pulled in as
+     CSS background images, whose root element is <svg>. Painting Canvas on
+     those turns every transparent line icon into an opaque filled square
+     (destiny.gg's chat toolbar, any Lucide/Feather icon set). Restrict the
+     backstop to HTML documents, which is all it was ever meant to cover. */
+  :root:not(svg) {
     background-color: Canvas;
     color: CanvasText;
   }
