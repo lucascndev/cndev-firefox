@@ -199,7 +199,7 @@ panel, menupopup {
   border-color: var(--accent) !important;
 }
 
-:root[inFullscreen="true"] #tabbrowser-tabbox {
+:root[inFullscreen] #tabbrowser-tabbox {
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
@@ -279,7 +279,12 @@ panel, menupopup {
   box-shadow: inset 0 1px 3px var(--glass-inset) !important;
 }
 
-#urlbar[focused="true"] > #urlbar-background {
+/* Bare [focused], never [focused="true"]. Firefox sets it with
+   toggleAttribute(), which yields an empty value, so ="true" silently
+   matches nothing. Same reason [inFullscreen] is bare above: that one
+   is set via setAttribute(..., true) on one path and toggleAttribute()
+   on another, so only a value-agnostic selector catches both. */
+#urlbar[focused] > #urlbar-background {
   border-color: var(--accent-soft) !important;
   box-shadow: inset 0 1px 3px var(--glass-inset),
               0 0 0 1px var(--accent-soft) !important;
