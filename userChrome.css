@@ -405,7 +405,15 @@ findbar .findbar-textbox {
   to   { transform: translateX(-100%); }
 }
 
-.tab-throbber {
+/* Only style the throbber while it is actually busy. Firefox hides an idle
+   throbber with a plain `display: none`, and a user-origin `!important`
+   outranks that -- so an ungated `display: flex !important` here pins a
+   spinner onto every tab forever, loaded or not. */
+.tab-throbber:not([busy]) {
+  display: none !important;
+}
+
+.tab-throbber[busy] {
   background-image: none !important;
   overflow: hidden !important;
   width: 1ch !important;
@@ -416,7 +424,7 @@ findbar .findbar-textbox {
   font-size: var(--tui-font-size) !important;
   color: var(--accent) !important;
 }
-.tab-throbber::before {
+.tab-throbber[busy]::before {
   content: "⠋⠙⠹⠸⠼⠴⠦⠧" !important;
   background-image: none !important;
   animation: gf-spinner 0.72s steps(8) infinite !important;
