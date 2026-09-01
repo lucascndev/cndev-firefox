@@ -23,8 +23,17 @@
      CSS background images, whose root element is <svg>. Painting Canvas on
      those turns every transparent line icon into an opaque filled square
      (destiny.gg's chat toolbar, any Lucide/Feather icon set). Restrict the
-     backstop to HTML documents, which is all it was ever meant to cover. */
-  :root:not(svg) {
+     backstop to HTML documents, which is all it was ever meant to cover.
+
+     The backstop lands on <body>, not on the root. A non-transparent root
+     background switches off the CSS rule that propagates <body>'s background
+     to the canvas, so painting the root here made every site that styles only
+     <body> paint its colour inside body's box alone -- on x.com, whose body is
+     height:100%, that shows as the page turning Canvas grey below one viewport
+     as soon as you scroll. Painting body instead keeps propagation intact: an
+     author's body background still fills the whole canvas, and where there is
+     none, this Canvas fill propagates in its place. */
+  :root:not(svg) > body {
     background-color: Canvas;
     color: CanvasText;
   }
